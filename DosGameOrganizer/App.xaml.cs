@@ -13,5 +13,10 @@ namespace DosGameOrganizer
     /// </summary>
     public partial class App : Application
     {
+        private void Init(object _sender, StartupEventArgs _event)
+        {
+            MainWindow = new OrganizerWindow();
+            MainWindow.Show();
+        }
     }
 }

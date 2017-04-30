@@ -1,0 +1,83 @@
+﻿<Window x:Class="DosGameOrganizer.Win32IconResourcePreviewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DosGameOrganizer"
+        mc:Ignorable="d"
+        Title="Icon Preview Window" 
+        Height="300" 
+        Width="300"
+        >
+    <Window.Resources>
+        <DrawingBrush x:Key="CheckerboardBrush"  Stretch="None" TileMode="Tile" Viewport="0,0,20,20" ViewportUnits="Absolute">
+            <!-- a drawing of 4 checkerboard tiles -->
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <!-- checkerboard background -->
+                    <GeometryDrawing Brush="White">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry Rect="0,0,20,20" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                    <!-- two checkerboard foreground tiles -->
+                    <GeometryDrawing Brush="#f0f0f0">
+                        <GeometryDrawing.Geometry>
+                            <GeometryGroup>
+                                <RectangleGeometry Rect="0,0,10,10" />
+                                <RectangleGeometry Rect="10,10,10,10" />
+                            </GeometryGroup>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+    </Window.Resources>
+    <DockPanel LastChildFill="True">
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+                <ComboBox Text="{Binding Path, UpdateSourceTrigger=PropertyChanged, FallbackValue='shell32.dll'}"
+                          IsEditable="True" 
+                          MinWidth="100" 
+                          Width="Auto"
+                          Padding="5" 
+                          Margin="5" 
+                          >
+                    <ComboBoxItem>explorer.exe</ComboBoxItem>
+                    <ComboBoxItem>shell32.dll</ComboBoxItem>
+                    <ComboBoxItem>user32.dll</ComboBoxItem>
+                    <ComboBoxItem>setupapi.dll</ComboBoxItem>
+                    <ComboBoxItem>pifmgr.dll</ComboBoxItem>
+                    <ComboBoxItem>pnidui.dll</ComboBoxItem>
+                    <ComboBoxItem>sensorscpl.dll</ComboBoxItem>
+                    <ComboBoxItem>wmploc.dll</ComboBoxItem>
+                    <ComboBoxItem>wpdshext.dll</ComboBoxItem>
+                    <ComboBoxItem>networkexplorer.dll</ComboBoxItem>
+                    <ComboBoxItem>netshell.dll</ComboBoxItem>
+                    <ComboBoxItem>netcenter.dll</ComboBoxItem>
+                    <ComboBoxItem>mmres.dll</ComboBoxItem>
+                    <ComboBoxItem>mmcndmgr.dll</ComboBoxItem>
+                    <ComboBoxItem>moricons.dll</ComboBoxItem>
+                    <ComboBoxItem>imageres.dll</ComboBoxItem>
+                    <ComboBoxItem>gameux.dll</ComboBoxItem>
+                    <ComboBoxItem>ddores.dll</ComboBoxItem>
+                    <ComboBoxItem>accessibilitycpl.dll</ComboBoxItem>
+                </ComboBox>
+                <Button Margin="0, 5, 5, 5" Click="BrowseForIcons">
+                    <StackPanel Orientation="Horizontal">
+                        <local:Win32IconResource ResourcePath="shell32.dll" ResourceIndex="4"></local:Win32IconResource>
+                        <TextBlock Padding="5" Text="Browse"></TextBlock>
+                    </StackPanel>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+        <ScrollViewer>
+            <WrapPanel Background="{StaticResource CheckerboardBrush}"  
+                       Name="m_WrapPanel" 
+                       Orientation="Horizontal"
+                       >
+
+            </WrapPanel>
+        </ScrollViewer>
+    </DockPanel>
+</Window>
