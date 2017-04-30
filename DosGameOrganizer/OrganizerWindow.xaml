@@ -9,11 +9,13 @@
         Height="800" 
         Width="1400"
         >
-    
+    <Window.Resources>
+        
+    </Window.Resources>
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File" Padding="5">
-                <MenuItem Header="Scan directory ..." Click="ScanDirectoryClick">
+                <MenuItem Header="Scan directory ..." Click="_Toobar_ScanDirectoryClick">
                     <MenuItem.Icon>
                         <local:Win32IconResource ResourceIndex="3" LargeIcon="True"/>
                     </MenuItem.Icon>
@@ -30,12 +32,32 @@
         </Menu>
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
-                
+                <Button Click="_Toobar_ScanDirectoryClick">
+                    <local:Win32IconResource RenderOptions.BitmapScalingMode="Fant"                                             
+                                             ToolTip="Scan directory"
+                                             ResourceIndex="126" 
+                                             Height="24"
+                                             Width="24" 
+                                             />
+                </Button>
+                <TextBox Text="{Binding TextFilter, UpdateSourceTrigger=PropertyChanged}" 
+                         MinWidth="200"
+                         Padding="4" 
+                         Margin="4" 
+                         />
+                <Button Click="_Toolbar_ClearSearch">
+                    <local:Win32IconResource RenderOptions.BitmapScalingMode="Fant"                                             
+                                             ToolTip="Clear search field"                                            
+                                             ResourceIndex="271" 
+                                             Height="24"
+                                             Width="24" 
+                                             />
+                </Button>
             </ToolBar>
         </ToolBarTray>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
@@ -72,37 +94,91 @@
                     </Style>
                 </DataGrid.CellStyle>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Year"      Binding="{Binding Year}"      />
-                    <DataGridTextColumn Header="Title"     Binding="{Binding Title}"     />
-                    <DataGridTextColumn Header="Developer" Binding="{Binding Developer}" />
-                    <DataGridTextColumn Header="Path"      Binding="{Binding Path}"      />
+                    <DataGridTextColumn Header="Year"      Binding="{Binding Year}"                 />
+                    <DataGridTextColumn Header="Title"     Binding="{Binding Title}"                />
+                    <DataGridTextColumn Header="Developer" Binding="{Binding Developer}"            />
+                    <DataGridTextColumn Header="File Size" Binding="{Binding FileSizeAsString}"     SortMemberPath="FileSize"  />
+                    <DataGridTextColumn Header="Path"      Binding="{Binding Path}"                 />
                 </DataGrid.Columns>
             </DataGrid>
-            <GridSplitter HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <GridSplitter Grid.Column="1"
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Stretch" 
+                          Background="Gray"
+                          />
             <TabControl Grid.Column="2">
                 <TabItem Header="General">
-                    <ScrollViewer>
-                    <ItemsControl ItemsSource="{Binding ElementName=_Grid, Path=SelectedItem.ZipContents}" Grid.IsSharedSizeScope="True">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <ItemContainerTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" SharedSizeGroup="ZipContentsWidthGroup"/>
-                                    </Grid.ColumnDefinitions>
-                                        <StackPanel Orientation="Horizontal">
-                                            <local:Win32IconResource ResourceIndex="0" Width="16" Height="16"/>
-                                            <TextBlock Padding="5" Text="{Binding}" />
-                                        </StackPanel>
-                                    </Grid>
-                            </ItemContainerTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    </ScrollViewer>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Margin="5">
+                            <Button HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Height="Auto"
+                                    Width="Auto" 
+                                    Padding="5"
+                                    >
+                                <StackPanel Orientation="Horizontal">
+                                    <local:Win32IconResource RenderOptions.BitmapScalingMode="Fant"                                                             
+                                                             ResourcePath="moricons.dll"                                                              
+                                                             VerticalAlignment="Center" 
+                                                             ResourceIndex="1" 
+                                                             Height="24"
+                                                             Width="24" 
+                                                             />
+                                    <TextBlock VerticalAlignment="Center" 
+                                               Text="Run In DOSBox" 
+                                               Padding="5"
+                                               />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                        <Separator Grid.Row="1"></Separator>
+                        <Grid HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              Grid.Row="2"
+                              >
+                            <ScrollViewer HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Stretch"
+                                          >
+                                <ListView ItemsSource="{Binding ElementName=_Grid, Path=SelectedItem.ZipContents}" 
+                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                          Grid.IsSharedSizeScope="True"
+                                          BorderThickness="0"
+                                          >
+                                    <ListView.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ListView.ItemsPanel>
+                                    <ListView.ItemTemplate>
+                                        <ItemContainerTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition SharedSizeGroup="ZipContentsWidthGroup" 
+                                                                      Width="Auto" 
+                                                                      />
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <local:Win32IconResource ResourceIndex="0" 
+                                                                             Height="16"
+                                                                             Width="16" 
+                                                                             />
+                                                    <TextBlock Padding="5" 
+                                                               Text="{Binding}" 
+                                                               />
+                                                </StackPanel>
+                                            </Grid>
+                                        </ItemContainerTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </ScrollViewer>
+                        </Grid>
+                    </Grid>
                 </TabItem>
             </TabControl>
         </Grid>

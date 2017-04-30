@@ -62,7 +62,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="OrganizerWindow.DataItem.cs" />
+    <Compile Include="GridDataModel.cs" />
     <Compile Include="Win32IconResource.cs" />
     <Compile Include="Utils\Win32IconResourcePreviewWindow.xaml.cs">
       <DependentUpon>Win32IconResourcePreviewWindow.xaml</DependentUpon>

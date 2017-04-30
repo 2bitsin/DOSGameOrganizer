@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,17 +23,57 @@ namespace DosGameOrganizer
     /// <summary>
     /// Interaction logic for OrganizerWindow.xaml
     /// </summary>
-    public partial class OrganizerWindow : Window
-    {
-
+    public partial class OrganizerWindow : Window, INotifyPropertyChanged
+    {        
         Window m_Window;
-        ObservableCollection<DataItem> m_DataList = new ObservableCollection<DataItem>();
-        public ObservableCollection<DataItem> DataList => m_DataList;
+        ObservableCollection<GridDataModel> m_DataList = new ObservableCollection<GridDataModel>();
+        ICollectionView m_DataView = null;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public ICollectionView DataList
+        {
+            get
+            {
+                return m_DataView;
+            }
+        }
+
+        string m_TextFilter = null;
+        public string TextFilter
+        {
+            set
+            {
+                m_TextFilter = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TextFilter"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DataList"));
+                m_DataView.Filter = (object _o) => { return FilterGrid(_o as GridDataModel); };
+            }
+            get
+            {
+                return m_TextFilter;
+            }
+        }
+        
+        private bool FilterGrid(GridDataModel _object)
+        {            
+            if (m_TextFilter == null || m_TextFilter.Length == 0)
+            {
+                return true;
+            }
+
+            if (_object.Title.Contains(m_TextFilter)
+             || _object.Developer.Contains(m_TextFilter)
+             || _object.Path.Contains(m_TextFilter))
+                return true;
+            return false;
+        }
 
         public OrganizerWindow()
         {
             InitializeComponent();
             DataContext = this;
+            m_DataView = CollectionViewSource.GetDefaultView(m_DataList);
             ScanDirectory(@"E:\Games\DOS");
         }
         private void OpenPreviewClick(object _sender, RoutedEventArgs _event)
@@ -41,7 +82,7 @@ namespace DosGameOrganizer
             m_Window.Show();
         }
 
-        private void ScanDirectoryClick(object _sender, RoutedEventArgs _events)
+        private void _Toobar_ScanDirectoryClick(object _sender, RoutedEventArgs _events)
         {
             var _Dialog = new FolderBrowserDialog()
             {
@@ -105,7 +146,7 @@ namespace DosGameOrganizer
                 return false;
             }
 
-            var _item = new DataItem()
+            var _item = new GridDataModel()
             {
                 Path       = _fullPath,
                 Title      = _Title.Trim(),
@@ -131,6 +172,11 @@ namespace DosGameOrganizer
         private void _Grid_SelectionChanged(object _sender, SelectionChangedEventArgs _event)
         {
 
+        }
+
+        private void _Toolbar_ClearSearch(object _sender, RoutedEventArgs _event)
+        {
+            TextFilter = "";
         }
     }
 }
