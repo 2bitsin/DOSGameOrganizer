@@ -6,42 +6,51 @@
         x:Class="DosGameOrganizer.OrganizerWindow"
         Title="OrganizerWindow" 
         mc:Ignorable="d"
-        Height="300" 
-        Width="300"
+        Height="800" 
+        Width="1400"
         >
-    <Grid>
-        <DockPanel LastChildFill="True">
-            <Menu DockPanel.Dock="Top">
-                <MenuItem Header="File" Padding="5">
-                    <MenuItem Header="Scan directory ..." Click="ScanDirectoryClick">
-                        <MenuItem.Icon>
-                            <local:Win32IconResource ResourceIndex="3" LargeIcon="True"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="Exit" Click="ExitFromApp">
-                        <MenuItem.Icon>
-                            <local:Win32IconResource ResourceIndex="27" LargeIcon="True"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
+    
+    <DockPanel LastChildFill="True">
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File" Padding="5">
+                <MenuItem Header="Scan directory ..." Click="ScanDirectoryClick">
+                    <MenuItem.Icon>
+                        <local:Win32IconResource ResourceIndex="3" LargeIcon="True"/>
+                    </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Utils" Padding="5">
-                    <MenuItem Header="Icon Preview" Click="OpenPreviewClick"></MenuItem>
+                <MenuItem Header="Exit" Click="ExitFromApp">
+                    <MenuItem.Icon>
+                        <local:Win32IconResource ResourceIndex="27" LargeIcon="True"/>
+                    </MenuItem.Icon>
                 </MenuItem>
-            </Menu>
-            <ToolBarTray DockPanel.Dock="Top">
-                <ToolBar>
-                    
-                </ToolBar>
-            </ToolBarTray>
-            <DataGrid 
+            </MenuItem>
+            <MenuItem Header="Utils" Padding="5">
+                <MenuItem Header="Icon Preview" Click="OpenPreviewClick"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+                
+            </ToolBar>
+        </ToolBarTray>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <DataGrid SelectionChanged="_Grid_SelectionChanged"
                       EnableColumnVirtualization="True"
                       ItemsSource="{Binding DataList}" 
+                      EnableRowVirtualization="True"                      
                       LoadingRow="_Grid_LoadingRow"
                       AutoGenerateColumns="False" 
                       GridLinesVisibility="None"
                       CanUserAddRows="False"
                       BorderThickness="0"
                       IsReadOnly="True"
+                      Grid.Column="0"
+                      x:Name="_Grid"
                       >
                 <DataGrid.CellStyle>
                     <Style TargetType="DataGridCell">
@@ -62,12 +71,6 @@
                         </Setter>
                     </Style>
                 </DataGrid.CellStyle>
-                <DataGrid.RowDetailsTemplate>
-                    <DataTemplate>
-                        <Expander>
-                        </Expander>
-                    </DataTemplate>
-                </DataGrid.RowDetailsTemplate>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Year"      Binding="{Binding Year}"      />
                     <DataGridTextColumn Header="Title"     Binding="{Binding Title}"     />
@@ -75,6 +78,34 @@
                     <DataGridTextColumn Header="Path"      Binding="{Binding Path}"      />
                 </DataGrid.Columns>
             </DataGrid>
-        </DockPanel>
-    </Grid>
+            <GridSplitter HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <TabControl Grid.Column="2">
+                <TabItem Header="General">
+                    <ScrollViewer>
+                    <ItemsControl ItemsSource="{Binding ElementName=_Grid, Path=SelectedItem.ZipContents}" Grid.IsSharedSizeScope="True">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <ItemContainerTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="ZipContentsWidthGroup"/>
+                                    </Grid.ColumnDefinitions>
+                                        <StackPanel Orientation="Horizontal">
+                                            <local:Win32IconResource ResourceIndex="0" Width="16" Height="16"/>
+                                            <TextBlock Padding="5" Text="{Binding}" />
+                                        </StackPanel>
+                                    </Grid>
+                            </ItemContainerTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </DockPanel>    
+    
 </Window>

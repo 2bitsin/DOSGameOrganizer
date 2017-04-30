@@ -37,6 +37,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -60,6 +62,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="OrganizerWindow.DataItem.cs" />
     <Compile Include="Win32IconResource.cs" />
     <Compile Include="Utils\Win32IconResourcePreviewWindow.xaml.cs">
       <DependentUpon>Win32IconResourcePreviewWindow.xaml</DependentUpon>

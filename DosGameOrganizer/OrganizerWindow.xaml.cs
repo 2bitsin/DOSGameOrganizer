@@ -24,14 +24,6 @@ namespace DosGameOrganizer
     /// </summary>
     public partial class OrganizerWindow : Window
     {
-        public class DataItem
-        {
-            public string Path { get; set; }
-            public string Developer { get; set; }
-            public string Title { get; set; }
-            public ulong Year { get; set; }
-
-        };
 
         Window m_Window;
         ObservableCollection<DataItem> m_DataList = new ObservableCollection<DataItem>();
@@ -134,6 +126,11 @@ namespace DosGameOrganizer
         private void _Grid_LoadingRow(object _sender, DataGridRowEventArgs _event)
         {
             _event.Row.Header = (_event.Row.GetIndex()).ToString();
+        }
+
+        private void _Grid_SelectionChanged(object _sender, SelectionChangedEventArgs _event)
+        {
+
         }
     }
 }
