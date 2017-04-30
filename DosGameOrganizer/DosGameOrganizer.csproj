@@ -63,6 +63,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GridDataModel.cs" />
+    <Compile Include="SettingsModel.cs" />
     <Compile Include="Win32IconResource.cs" />
     <Compile Include="Utils\Win32IconResourcePreviewWindow.xaml.cs">
       <DependentUpon>Win32IconResourcePreviewWindow.xaml</DependentUpon>

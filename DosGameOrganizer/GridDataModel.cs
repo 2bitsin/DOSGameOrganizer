@@ -8,6 +8,7 @@ using System.IO;
 
 namespace DosGameOrganizer
 {
+    [Serializable]
     public class GridDataModel: INotifyPropertyChanged
     {
         string _Path;

@@ -27,7 +27,7 @@ namespace DosGameOrganizer
     {        
         Window m_Window;
         ObservableCollection<GridDataModel> m_DataList = new ObservableCollection<GridDataModel>();
-        ICollectionView m_DataView = null;
+        ICollectionView m_DataView = null;        
 
         public event PropertyChangedEventHandler PropertyChanged;
 
