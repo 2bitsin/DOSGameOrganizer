@@ -75,6 +75,7 @@ namespace DosGameOrganizer
             DataContext = this;
             m_DataView = CollectionViewSource.GetDefaultView(m_DataList);
             ScanDirectory(@"E:\Games\DOS");
+            _OpenSettingsDialog(null, null);
         }
         private void OpenPreviewClick(object _sender, RoutedEventArgs _event)
         {
@@ -177,6 +178,11 @@ namespace DosGameOrganizer
         private void _Toolbar_ClearSearch(object _sender, RoutedEventArgs _event)
         {
             TextFilter = "";
+        }
+
+        private Window _Dialog;
+        private void _OpenSettingsDialog(object _sender, RoutedEventArgs _event)
+        {
         }
     }
 }
