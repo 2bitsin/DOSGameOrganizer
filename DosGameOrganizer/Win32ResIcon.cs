@@ -13,16 +13,16 @@ using System.Windows.Media.Imaging;
 
 namespace DosGameOrganizer
 {
-    public class Win32IconResource : System.Windows.Controls.Image
+    public class Win32ResIcon : System.Windows.Controls.Image
     {
-        public Win32IconResource() : base()
+        public Win32ResIcon() : base()
         {
             _UpdateSource();   
         }
 
-        public static readonly DependencyProperty ResourcePathProperty   = DependencyProperty.Register("ResourcePath",   typeof(String),  typeof(Win32IconResource), new UIPropertyMetadata("shell32.dll",  new PropertyChangedCallback(_PropertyChanged)));
-        public static readonly DependencyProperty ResourceIndexProperty  = DependencyProperty.Register("ResourceIndex",  typeof(Int32),   typeof(Win32IconResource), new UIPropertyMetadata(0,              new PropertyChangedCallback(_PropertyChanged)));
-        public static readonly DependencyProperty LargeIconProperty      = DependencyProperty.Register("LargeIcon",      typeof(Boolean), typeof(Win32IconResource), new UIPropertyMetadata(true,           new PropertyChangedCallback(_PropertyChanged)));
+        public static readonly DependencyProperty ResourcePathProperty   = DependencyProperty.Register("ResourcePath",   typeof(String),  typeof(Win32ResIcon), new UIPropertyMetadata("shell32.dll",  new PropertyChangedCallback(_PropertyChanged)));
+        public static readonly DependencyProperty ResourceIndexProperty  = DependencyProperty.Register("ResourceIndex",  typeof(Int32),   typeof(Win32ResIcon), new UIPropertyMetadata(0,              new PropertyChangedCallback(_PropertyChanged)));
+        public static readonly DependencyProperty LargeIconProperty      = DependencyProperty.Register("LargeIcon",      typeof(Boolean), typeof(Win32ResIcon), new UIPropertyMetadata(true,           new PropertyChangedCallback(_PropertyChanged)));
 
         public virtual String ResourcePath
         {
@@ -79,7 +79,7 @@ namespace DosGameOrganizer
                 return;
             }
 
-            (_object as Win32IconResource)._UpdateSource();
+            (_object as Win32ResIcon)._UpdateSource();
         }
 
         public static int GetNumberOfIcons(String _Path)

@@ -63,8 +63,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GridDataModel.cs" />
-    <Compile Include="SettingsModel.cs" />
-    <Compile Include="Win32IconResource.cs" />
+    <Compile Include="ShellFileIcon.cs" />
+    <Compile Include="Win32ResIcon.cs" />
     <Compile Include="Utils\Win32IconResourcePreviewWindow.xaml.cs">
       <DependentUpon>Win32IconResourcePreviewWindow.xaml</DependentUpon>
     </Compile>
@@ -107,6 +107,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Shell32">
+      <Guid>{50A7E9B0-70EF-11D1-B75A-00A0C90564FE}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -81,10 +81,10 @@ namespace DosGameOrganizer
                 return false;
             }
             this.m_WrapPanel.Children.Clear();
-            var n = Win32IconResource.GetNumberOfIcons(_Path);
+            var n = Win32ResIcon.GetNumberOfIcons(_Path);
             for (var i = 0; i < n; ++i)
             {
-                var item = new Win32IconResource()
+                var item = new Win32ResIcon()
                 {
                     ResourcePath = _Path,
                     ResourceIndex = i,

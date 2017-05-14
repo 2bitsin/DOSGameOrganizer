@@ -10,20 +10,18 @@
         Width="1400"
         >
     <Window.Resources>
-        
     </Window.Resources>
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File" Padding="5">
                 <MenuItem Header="Scan directory ..." Click="_Toobar_ScanDirectoryClick">
                     <MenuItem.Icon>
-                        <local:Win32IconResource ResourceIndex="3" LargeIcon="True"/>
+                        <local:Win32ResIcon ResourceIndex="3" LargeIcon="True"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Options ..." Click="_OpenSettingsDialog"></MenuItem>
                 <MenuItem Header="Exit" Click="ExitFromApp">
                     <MenuItem.Icon>
-                        <local:Win32IconResource ResourceIndex="27" LargeIcon="True"/>
+                        <local:Win32ResIcon ResourceIndex="27" LargeIcon="True"/>
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -34,7 +32,7 @@
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
                 <Button Click="_Toobar_ScanDirectoryClick">
-                    <local:Win32IconResource RenderOptions.BitmapScalingMode="Fant"                                             
+                    <local:Win32ResIcon RenderOptions.BitmapScalingMode="Fant"                                             
                                              ToolTip="Scan directory"
                                              ResourceIndex="126" 
                                              Height="24"
@@ -47,7 +45,7 @@
                          Margin="4" 
                          />
                 <Button Click="_Toolbar_ClearSearch">
-                    <local:Win32IconResource RenderOptions.BitmapScalingMode="Fant"                                             
+                    <local:Win32ResIcon RenderOptions.BitmapScalingMode="Fant"                                             
                                              ToolTip="Clear search field"                                            
                                              ResourceIndex="271" 
                                              Height="24"
@@ -118,12 +116,13 @@
                         <StackPanel Grid.Row="0" Margin="5">
                             <Button HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
+                                    IsEnabled="{Binding CanRunInDOSBox}"
                                     Height="Auto"
                                     Width="Auto" 
                                     Padding="5"
                                     >
                                 <StackPanel Orientation="Horizontal">
-                                    <local:Win32IconResource RenderOptions.BitmapScalingMode="Fant"                                                             
+                                    <local:Win32ResIcon RenderOptions.BitmapScalingMode="Fant"                                                             
                                                              ResourcePath="moricons.dll"                                                              
                                                              VerticalAlignment="Center" 
                                                              ResourceIndex="1" 
@@ -132,7 +131,7 @@
                                                              />
                                     <TextBlock VerticalAlignment="Center" 
                                                Text="Run In DOSBox" 
-                                               Padding="5"
+                                               Padding="5"                                               
                                                />
                                 </StackPanel>
                             </Button>
@@ -150,6 +149,7 @@
                                           ScrollViewer.VerticalScrollBarVisibility="Auto"
                                           Grid.IsSharedSizeScope="True"
                                           BorderThickness="0"
+                                          SelectedValue="{Binding SelectedStartupFile, Mode=OneWayToSource}"
                                           >
                                     <ListView.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -165,10 +165,11 @@
                                                                       />
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel Orientation="Horizontal">
-                                                    <local:Win32IconResource ResourceIndex="0" 
-                                                                             Height="16"
-                                                                             Width="16" 
-                                                                             />
+                                                    <local:ShellFileIcon RenderOptions.BitmapScalingMode="Fant"
+                                                                         FilePath="{Binding Path=., Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                         Height="16"
+                                                                         Width="16" 
+                                                                         />
                                                     <TextBlock Padding="5" 
                                                                Text="{Binding}" 
                                                                />
@@ -181,7 +182,11 @@
                         </Grid>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Settings" Padding="5">
+                <TabItem DataContext="{Binding Source={x:Static p:Settings.Default}}" 
+                         xmlns:p="clr-namespace:DosGameOrganizer.Properties"
+                         Header="Settings" 
+                         Padding="5" 
+                         >
                     <Grid Margin="10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -208,10 +213,12 @@
                                     >
                             <TextBox Width="250"
                                      VerticalContentAlignment="Center"                                     
+                                     Text="{Binding DOSBoxPath}"
+                                     Padding="2"
                                      />
-                            <Button Margin="5, 0, 0, 0">
+                            <Button Margin="5, 0, 0, 0" Click="BrowseDOSBoxPath">
                                 <StackPanel Orientation="Horizontal">
-                                    <local:Win32IconResource RenderOptions.BitmapScalingMode="Fant"
+                                    <local:Win32ResIcon RenderOptions.BitmapScalingMode="Fant"
                                                              ResourceIndex="3" 
                                                              Height="16" 
                                                              Width="16"                                                              
@@ -237,10 +244,12 @@
                                     >
                             <TextBox Width="250"
                                      VerticalContentAlignment="Center"                                     
+                                     Text="{Binding ExtractionPath}"
+                                     Padding="2"
                                      />
-                            <Button Margin="5, 0, 0, 0">
+                            <Button Margin="5, 0, 0, 0" Click="BrowseExtractionPath">
                                 <StackPanel Orientation="Horizontal">
-                                    <local:Win32IconResource RenderOptions.BitmapScalingMode="Fant"
+                                    <local:Win32ResIcon RenderOptions.BitmapScalingMode="Fant"
                                                              ResourceIndex="3" 
                                                              Height="16" 
                                                              Width="16"                                                              
@@ -253,15 +262,15 @@
                         </StackPanel>
 
                         <StackPanel Grid.ColumnSpan="2" Grid.Row="2" Grid.Column="1"  Orientation="Horizontal">
-                            <Button Margin="5">
+                            <Button Margin="5" Click="Settings_Save">
                                 <StackPanel Orientation="Horizontal" Margin="5,2,5,2">
-                                    <local:Win32IconResource ResourceIndex="258" Width="16" Height="16" RenderOptions.BitmapScalingMode="Fant"/>
+                                    <local:Win32ResIcon ResourceIndex="258" Width="16" Height="16" RenderOptions.BitmapScalingMode="Fant"/>
                                     <TextBlock Text="Save" Padding="2"/>
                                 </StackPanel>
                             </Button>
-                            <Button Margin="5">
+                            <Button Margin="5" Click="Settings_Reset">
                                 <StackPanel Orientation="Horizontal" Margin="5,2,5,2">
-                                    <local:Win32IconResource ResourceIndex="271" Width="16" Height="16" RenderOptions.BitmapScalingMode="Fant"/>
+                                    <local:Win32ResIcon ResourceIndex="271" Width="16" Height="16" RenderOptions.BitmapScalingMode="Fant"/>
                                     <TextBlock Text="Reset" Padding="2"/>
                                 </StackPanel>
                             </Button>

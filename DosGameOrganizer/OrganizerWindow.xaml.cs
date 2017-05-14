@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,30 @@ namespace DosGameOrganizer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        string _StartupFile;
+        public string SelectedStartupFile
+        {
+            set
+            {
+                if (_StartupFile != value)
+                {
+                    _StartupFile = value;
+                    _U("CanRunInDOSBox");
+                    Trace.TraceInformation("Selected Item : {0}", value);
+                }
+            }
+        }        
+
+        public bool CanRunInDOSBox
+        {
+            get
+            {
+                return File.Exists(Properties.Settings.Default.DOSBoxPath)
+                    && Directory.Exists(Properties.Settings.Default.ExtractionPath)
+                    && (_StartupFile?.Length > 0) ;
+            }
+        }
+
         public ICollectionView DataList
         {
             get
@@ -40,13 +65,17 @@ namespace DosGameOrganizer
         }
 
         string m_TextFilter = null;
+        private void _U(string Name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(Name));
+        }
         public string TextFilter
         {
             set
             {
                 m_TextFilter = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TextFilter"));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DataList"));
+                _U("TextFilter");
+                _U("DataList");
                 m_DataView.Filter = (object _o) => { return FilterGrid(_o as GridDataModel); };
             }
             get
@@ -75,7 +104,11 @@ namespace DosGameOrganizer
             DataContext = this;
             m_DataView = CollectionViewSource.GetDefaultView(m_DataList);
             ScanDirectory(@"E:\Games\DOS");
-            _OpenSettingsDialog(null, null);
+
+            Properties.Settings.Default.PropertyChanged += (object _sender, PropertyChangedEventArgs _event) =>
+            {
+                _U("CanRunInDOSBox");
+            };
         }
         private void OpenPreviewClick(object _sender, RoutedEventArgs _event)
         {
@@ -129,7 +162,6 @@ namespace DosGameOrganizer
             var _Second = _Matches.Groups[2]?.Value;
             var _Third  = _Matches.Groups[3]?.Value;
 
-
             var _Year = new ulong();
             var _Developer = "";
 
@@ -180,9 +212,46 @@ namespace DosGameOrganizer
             TextFilter = "";
         }
 
-        private Window _Dialog;
-        private void _OpenSettingsDialog(object _sender, RoutedEventArgs _event)
+        private void Settings_Save(object sender, RoutedEventArgs e)
         {
+            Properties.Settings.Default.Save();
         }
+
+        private void Settings_Reset(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.Reload();
+        }
+
+        private void BrowseExtractionPath(object sender, RoutedEventArgs e)
+        {
+            var _Dialog = new FolderBrowserDialog()
+            {
+                Description = "Select folder to extract to.",
+                ShowNewFolderButton = true,
+                SelectedPath = "."                
+            };
+
+            if (_Dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                Properties.Settings.Default.ExtractionPath = _Dialog.SelectedPath;
+            }
+        }
+
+        private void BrowseDOSBoxPath(object sender, RoutedEventArgs e)
+        {
+            var _Dialog = new Microsoft.Win32.OpenFileDialog()
+            {
+                Filter = "DOS Box Executable(dosbox.exe)|DOSBox.exe",
+                InitialDirectory = System.IO.Path.GetFullPath("."),
+                CheckFileExists = true,
+                CheckPathExists = true
+            };
+
+            if (_Dialog.ShowDialog() == true)
+            {
+                Properties.Settings.Default.DOSBoxPath = _Dialog.FileName;
+            }
+        }
+
     }
 }
