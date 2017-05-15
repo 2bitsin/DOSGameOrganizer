@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -80,15 +81,28 @@ namespace DosGameOrganizer
         
         public ShellFileIcon()
         {
+            Height = 16;
+            Width = 16;
             _UpdateSource();
         }
 
-        protected void _UpdateSource()
+        protected static Dictionary<Tuple<String, int>, System.Windows.Media.ImageSource> _Cache = new Dictionary<Tuple<string, int>, System.Windows.Media.ImageSource>();
+
+        protected static System.Windows.Media.ImageSource LoadIcon(string _path, int _width, int _height)
         {
-            var _shfi = new SHFILEINFO ();
+            _path = Path.GetExtension(_path).ToUpper();
+            var _size = Math.Max(_width, _height);
+            var _tkey = new Tuple<string, int>(_path, _size);
+
+            if (_Cache.ContainsKey(_tkey))
+            {
+                return _Cache[_tkey];
+            }
+
+            var _shfi = new SHFILEINFO();
             var _flags = SHGFI_USEFILEATTRIBUTES + SHGFI_ICON;
 
-            if (Math.Max(Width, Height) > 16)
+            if (_size > 16)
             {
                 _flags += SHGFI_LARGEICON;
             }
@@ -97,12 +111,21 @@ namespace DosGameOrganizer
                 _flags += SHGFI_SMALLICON;
             }
 
-            var _size = (uint)System.Runtime.InteropServices.Marshal.SizeOf(_shfi);
+            var _stsz = (uint)System.Runtime.InteropServices.Marshal.SizeOf(_shfi);
 
-            SHGetFileInfo(FilePath, FILE_ATTRIBUTE_NORMAL, ref _shfi, _size, _flags);
-            this.Source = Imaging.CreateBitmapSourceFromHIcon(_shfi.hIcon, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+            SHGetFileInfo(_path, FILE_ATTRIBUTE_NORMAL, ref _shfi, _stsz, _flags);
+            var _source = Imaging.CreateBitmapSourceFromHIcon(_shfi.hIcon, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+
+            _Cache.Add(_tkey, _source);
 
             DestroyIcon(_shfi.hIcon);
+
+            return _source;
+        }
+
+        protected void _UpdateSource()
+        {
+            this.Source = LoadIcon(FilePath, (int)Width, (int)Height);
         }
 
         protected static void _PropertyChanged(DependencyObject _sender, DependencyPropertyChangedEventArgs _event)

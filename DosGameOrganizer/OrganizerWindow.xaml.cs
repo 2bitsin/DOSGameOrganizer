@@ -27,7 +27,7 @@ namespace DosGameOrganizer
     public partial class OrganizerWindow : Window, INotifyPropertyChanged
     {        
         Window m_Window;
-        ObservableCollection<GridDataModel> m_DataList = new ObservableCollection<GridDataModel>();
+        ObservableCollection<GameMetadataModel> m_DataList = new ObservableCollection<GameMetadataModel>();
         ICollectionView m_DataView = null;        
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -76,7 +76,7 @@ namespace DosGameOrganizer
                 m_TextFilter = value;
                 _U("TextFilter");
                 _U("DataList");
-                m_DataView.Filter = (object _o) => { return FilterGrid(_o as GridDataModel); };
+                m_DataView.Filter = (object _o) => { return FilterGrid(_o as GameMetadataModel); };
             }
             get
             {
@@ -84,7 +84,7 @@ namespace DosGameOrganizer
             }
         }
         
-        private bool FilterGrid(GridDataModel _object)
+        private bool FilterGrid(GameMetadataModel _object)
         {            
             if (m_TextFilter == null || m_TextFilter.Length == 0)
             {
@@ -179,7 +179,7 @@ namespace DosGameOrganizer
                 return false;
             }
 
-            var _item = new GridDataModel()
+            var _item = new GameMetadataModel()
             {
                 Path       = _fullPath,
                 Title      = _Title.Trim(),

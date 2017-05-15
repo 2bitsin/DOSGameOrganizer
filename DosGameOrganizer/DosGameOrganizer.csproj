@@ -62,12 +62,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GridDataModel.cs" />
+    <Compile Include="GameMetadataModel.cs" />
     <Compile Include="ShellFileIcon.cs" />
     <Compile Include="Win32ResIcon.cs" />
     <Compile Include="Utils\Win32IconResourcePreviewWindow.xaml.cs">
       <DependentUpon>Win32IconResourcePreviewWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ZipFileModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="OrganizerWindow.xaml.cs">
