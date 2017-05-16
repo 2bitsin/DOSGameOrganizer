@@ -278,16 +278,64 @@ namespace DosGameOrganizer
 
         private void RunInDosBox(object _sender, RoutedEventArgs _event)
         {
-            var _launcher = new Launcher();
-
             CanRunInDOSBox_IsEnabled = false;
             _GlobalStatusText.Text = "Preparing to launch, please be patient ...";
-            var _task = _launcher.Run(_Grid.SelectedValue as GameMetadataModel, this._ExecutableSelect.SelectedValue as String);
+            var _meta = _Grid.SelectedValue as GameMetadataModel;
+            var _task = _meta.Run(this._ExecutableSelect.SelectedValue as String);
             _task.ContinueWith((Task _theTask) =>
             {
                 CanRunInDOSBox_IsEnabled = true;
                 this.Dispatcher.Invoke(() => _GlobalStatusText.Text = "Ready.");
             });
+        }
+
+        private void RevealInExplorer(object _sender, RoutedEventArgs _event)
+        {
+            if(_sender is FrameworkElement _element)
+            {
+                if (_element.DataContext is GameMetadataModel _meta)
+                {
+                    _meta.Explore();
+                }
+            }
+        }
+
+        private void ExtractGameData(object _sender, RoutedEventArgs _event)
+        {
+            if (_sender is FrameworkElement _element)
+            {
+                if (_element.DataContext is GameMetadataModel _meta)
+                {
+                    var _status = (Window.GetWindow(_element) as OrganizerWindow)._GlobalStatusText;
+                    _status.Text = "Extracting ...";
+                        
+                    _meta.Extract().ContinueWith((_task) =>
+                    {
+                        _U("GameDataPath");
+                        _U("GameDataPathExists");
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            _status.Text = "Complete.";
+                        });
+                    });
+                }
+            }
+        }
+        private void DeleteGameData(object _sender, RoutedEventArgs _event)
+        {
+            if (_sender is FrameworkElement _element)
+            {
+                if (_element.DataContext is GameMetadataModel _meta)
+                {
+
+                    if (Directory.Exists(_meta.GameDataPath))
+                    {
+                        _meta.DeleteGameData();
+                        _U("GameDataPath");
+                        _U("GameDataPathExists");
+                    }
+                }
+            }
         }
     }
 }

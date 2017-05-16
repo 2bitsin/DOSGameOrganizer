@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -16,6 +17,12 @@ namespace DosGameOrganizer
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        string _Path;
+        ICollectionView _DirectoryEntriesView;
+        List<ZipArchiveEntry> _DirectoryEntries;
+        Task _EnumerateZipTask;
+        String _StatusText;
+
         public Task ExtractTo(string _targetPath)
         {
             return Task.Run(() => ZipFile.ExtractToDirectory(_Path, _targetPath));
@@ -26,12 +33,6 @@ namespace DosGameOrganizer
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        string _Path;
-        ICollectionView _DirectoryEntriesView;
-        List<ZipArchiveEntry> _DirectoryEntries;
-        Task _EnumerateZipTask;
-
-        String _StatusText;
         public String StatusText
         {
             get { return _StatusText; }
@@ -46,7 +47,7 @@ namespace DosGameOrganizer
         }
 
         public ZipFileModel(string _path)
-        {            
+        {
             _Path = _path;
             _EnumerateZipTask = new Task(() =>
             {
@@ -54,10 +55,10 @@ namespace DosGameOrganizer
                 var _entries = new List<ZipArchiveEntry>();
 
                 foreach (var _entry in _archive.Entries)
-                {                    
-                    _entries.Add (_entry);
+                {
+                    _entries.Add(_entry);
                 }
-                    
+
                 Dispatcher.CurrentDispatcher.Invoke(() =>
                 {
                     _DirectoryEntries = _entries;
@@ -66,6 +67,17 @@ namespace DosGameOrganizer
                 });
             });
         }
+
+        private bool FilterPredicate(object x)
+        {
+            if (_FilterExecutables)
+            {
+                var _ext = Path.GetExtension((x as ZipArchiveEntry).Name).ToLower();
+                return _ext == ".exe" || _ext == ".com" || _ext == ".bat";
+            }
+            return true;
+        }
+
 
         bool _FilterExecutables;
         public bool FilterExecutables
@@ -79,17 +91,8 @@ namespace DosGameOrganizer
 
                     if (_DirectoryEntriesView != null)
                     {
-                        Predicate<object> _filter = (object x) =>
-                        {
-                            var _ext = Path.GetExtension((x as ZipArchiveEntry).Name).ToLower();
-                            return _ext == ".exe" || _ext == ".com" || _ext == ".bat";
-                        };
-
-                        Predicate<object> _nofilter = (object x) => { return true; };
-
-                        _DirectoryEntriesView.Filter = _FilterExecutables ? _filter : _nofilter;
+                        _DirectoryEntriesView.Filter = FilterPredicate;
                     }
-
                     _U(nameof(FilterExecutables));
                     _U(nameof(DirectoryEntries));
                 }
@@ -102,6 +105,13 @@ namespace DosGameOrganizer
             {
                 if(_DirectoryEntriesView == null)
                 {
+                    _EnumerateZipTask.ContinueWith((_task) =>
+                    {
+                        Dispatcher.CurrentDispatcher.Invoke(() =>
+                        {
+                            FilterExecutables = true;
+                        });
+                    });
                     _EnumerateZipTask.Start();
                     return null;
                 }

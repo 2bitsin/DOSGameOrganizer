@@ -63,7 +63,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameMetadataModel.cs" />
-    <Compile Include="Launcher.cs" />
     <Compile Include="ShellFileIcon.cs" />
     <Compile Include="Win32ResIcon.cs" />
     <Compile Include="Utils\Win32IconResourcePreviewWindow.xaml.cs">

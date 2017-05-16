@@ -10,6 +10,23 @@
         Width="1400"
         >
     <Window.Resources>
+        <ContextMenu x:Key="_Grid_ContextMenu">
+            <MenuItem Header="Reveal in explorer ..." Click="RevealInExplorer" IsEnabled="{Binding GameDataPathExists}">
+                <MenuItem.Icon>
+                    <local:Win32ResIcon ResourcePath="explorer.exe" ResourceIndex="0"/>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Extract game data" Click="ExtractGameData">
+                <MenuItem.Icon>
+                    <local:Win32ResIcon ResourcePath="shell32.dll" ResourceIndex="45"/>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Delete game data" Click="DeleteGameData" IsEnabled="{Binding GameDataPathExists}">
+                <MenuItem.Icon>
+                    <local:Win32ResIcon ResourcePath="shell32.dll" ResourceIndex="131"/>
+                </MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
     </Window.Resources>
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top">
@@ -73,6 +90,7 @@
                       AutoGenerateColumns="False" 
                       GridLinesVisibility="None"
                       CanUserAddRows="False"
+                      SelectionMode="Single"
                       BorderThickness="0"
                       IsReadOnly="True"
                       Grid.Column="0"
@@ -81,6 +99,7 @@
                 <DataGrid.CellStyle>
                     <Style TargetType="DataGridCell">
                         <Setter Property="Padding" Value="2"/>
+                        <Setter Property="ContextMenu" Value="{StaticResource _Grid_ContextMenu}"/>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type DataGridCell}">
@@ -95,9 +114,19 @@
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding GameDataPathExists}" Value="True">
+                                <Setter Property="Foreground" Value="#FF700000"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding GameDataPathExists}" Value="False">
+                                <Setter Property="Foreground" Value="Black"/>
+                            </DataTrigger>
+                        </Style.Triggers>
                     </Style>
                 </DataGrid.CellStyle>
                 <DataGrid.Columns>
+                    <DataGridCheckBoxColumn IsReadOnly="True" Binding="{Binding GameDataPathExists, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+
                     <DataGridTextColumn Header="Year"      Binding="{Binding Year}"                 />
                     <DataGridTextColumn Header="Title"     Binding="{Binding Title}"                />
                     <DataGridTextColumn Header="Developer" Binding="{Binding Developer}"            />
