@@ -44,14 +44,30 @@ namespace DosGameOrganizer
                     Trace.TraceInformation("Selected Item : {0}", value);
                 }
             }
-        }        
+        }
+
+        bool _CanRunInDOSBox_IsEnabled = true;
+
+        public bool CanRunInDOSBox_IsEnabled
+        {
+            get { return _CanRunInDOSBox_IsEnabled; }
+            set
+            {
+                if (_CanRunInDOSBox_IsEnabled != value)
+                {
+                    _CanRunInDOSBox_IsEnabled = value;
+                    _U("CanRunInDOSBox");
+                }
+            }
+        }
 
         public bool CanRunInDOSBox
         {
             get
             {
-                return File.Exists(Properties.Settings.Default.DOSBoxPath)
+                return _CanRunInDOSBox_IsEnabled
                     && Directory.Exists(Properties.Settings.Default.ExtractionPath)
+                    && File.Exists(Properties.Settings.Default.DOSBoxPath)
                     && (_StartupFile?.Length > 0) ;
             }
         }
@@ -91,9 +107,10 @@ namespace DosGameOrganizer
                 return true;
             }
 
-            if (_object.Title.Contains(m_TextFilter)
-             || _object.Developer.Contains(m_TextFilter)
-             || _object.Path.Contains(m_TextFilter))
+            var _key = m_TextFilter.ToLower();
+            if (_object.Title.ToLower().Contains(_key)
+             || _object.Developer.ToLower().Contains(_key)
+             || _object.Path.ToLower().Contains(_key))
                 return true;
             return false;
         }
@@ -103,7 +120,11 @@ namespace DosGameOrganizer
             InitializeComponent();
             DataContext = this;
             m_DataView = CollectionViewSource.GetDefaultView(m_DataList);
-            ScanDirectory(@"E:\Games\DOS");
+
+            if (Properties.Settings.Default.LastGameDir != "")
+            {
+                ScanDirectory(Properties.Settings.Default.LastGameDir);
+            }
 
             Properties.Settings.Default.PropertyChanged += (object _sender, PropertyChangedEventArgs _event) =>
             {
@@ -127,6 +148,8 @@ namespace DosGameOrganizer
             
             if (_Dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                Properties.Settings.Default.LastGameDir = _Dialog.SelectedPath;
+                Properties.Settings.Default.Save();
                 ScanDirectory(_Dialog.SelectedPath);
             }                
         }
@@ -253,5 +276,18 @@ namespace DosGameOrganizer
             }
         }
 
+        private void RunInDosBox(object _sender, RoutedEventArgs _event)
+        {
+            var _launcher = new Launcher();
+
+            CanRunInDOSBox_IsEnabled = false;
+            _GlobalStatusText.Text = "Preparing to launch, please be patient ...";
+            var _task = _launcher.Run(_Grid.SelectedValue as GameMetadataModel, this._ExecutableSelect.SelectedValue as String);
+            _task.ContinueWith((Task _theTask) =>
+            {
+                CanRunInDOSBox_IsEnabled = true;
+                this.Dispatcher.Invoke(() => _GlobalStatusText.Text = "Ready.");
+            });
+        }
     }
 }

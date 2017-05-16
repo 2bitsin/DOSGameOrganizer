@@ -29,6 +29,11 @@
                 <MenuItem Header="Icon Preview" Click="OpenPreviewClick"></MenuItem>
             </MenuItem>
         </Menu>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StackPanel>
+                <TextBlock Margin="5" Name="_GlobalStatusText"/>
+            </StackPanel>
+        </StatusBar>
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
                 <Button Click="_Toobar_ScanDirectoryClick">
@@ -118,9 +123,10 @@
                                     Grid.Row="0" 
                                     Margin="5" 
                                     >
-                            <Button HorizontalAlignment="Left"
+                            <Button IsEnabled="{Binding CanRunInDOSBox}"
+                                    HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    IsEnabled="{Binding CanRunInDOSBox}"
+                                    Click="RunInDosBox"
                                     Height="Auto"
                                     Width="Auto" 
                                     Padding="5"
@@ -133,7 +139,7 @@
                                                         Height="24"
                                                         Width="24" 
                                                         />
-                                    <TextBlock VerticalAlignment="Center" 
+                                    <TextBlock VerticalAlignment="Center"                                                
                                                Text="Run In DOSBox" 
                                                Padding="5"                                               
                                                />
@@ -155,10 +161,11 @@
                             <ListView ItemsSource="{Binding ElementName=_Grid, Path=SelectedItem.Archive.DirectoryEntries}" 
                                       SelectedValue="{Binding SelectedStartupFile, Mode=OneWayToSource}"
                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                                       VirtualizingPanel.VirtualizationMode="Recycling"
+                                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                                       Grid.IsSharedSizeScope="True"
                                       SelectedValuePath="FullName"
+                                      Name="_ExecutableSelect"
                                       BorderThickness="0"                                      
                                       >
                                 <ListView.ItemsPanel>

@@ -46,5 +46,17 @@ namespace DosGameOrganizer.Properties {
                 this["ExtractionPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastGameDir {
+            get {
+                return ((string)(this["LastGameDir"]));
+            }
+            set {
+                this["LastGameDir"] = value;
+            }
+        }
     }
 }

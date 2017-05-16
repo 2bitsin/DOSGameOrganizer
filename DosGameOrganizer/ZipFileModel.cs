@@ -16,6 +16,11 @@ namespace DosGameOrganizer
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public Task ExtractTo(string _targetPath)
+        {
+            return Task.Run(() => ZipFile.ExtractToDirectory(_Path, _targetPath));
+        }
+
         protected void _U(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
