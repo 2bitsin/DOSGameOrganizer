@@ -227,6 +227,83 @@
                         </Grid>
                     </Grid>
                 </TabItem>
+                <TabItem Header="DOSBox.conf" Padding="5">
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Border CornerRadius="5" Height="Auto" VerticalAlignment="Top">
+                            <Border.Background>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="#f0f0f0" Offset="0"/>
+                                    <GradientStop Color="#f8f8f8" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Expander Height="Auto" Margin="5" IsExpanded="True">
+                                <Expander.Header>
+                                    <TextBlock Text="SDL Properties ..." FontStyle="Italic" />
+                                </Expander.Header>
+                                <StackPanel Orientation="Horizontal" Height="Auto" Margin="0, 5">
+                                    <StackPanel Height="Auto">
+                                        <CheckBox Margin="0, 2" x:Name="_FullscreenCheckbox" IsChecked="{Binding IsFullScreen, FallbackValue=False}">Fullscreen</CheckBox>
+                                        <CheckBox Margin="0, 2" IsChecked="{Binding IsDoubleBuffered, FallbackValue=False}" IsEnabled="{Binding ElementName=_FullscreenCheckbox, Path=IsChecked}" >Double buffered</CheckBox>
+                                        <StackPanel Orientation="Vertical">
+                                            <TextBlock Margin="0, 2, 0, 0" Text="Fullscreen resolution"/>
+                                            <ComboBox Margin="0, 2" Width="Auto" HorizontalAlignment="Left" SelectedIndex="0">
+                                                <ComboBoxItem>320 x 240</ComboBoxItem>
+                                                <ComboBoxItem>640 x 480</ComboBoxItem>
+                                                <ComboBoxItem>800 x 600</ComboBoxItem>
+                                                <ComboBoxItem>1024 x 768</ComboBoxItem>
+                                            </ComboBox>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Vertical">
+                                            <TextBlock Margin="0, 2, 0, 0" Text="Windowed resolution"/>
+                                            <ComboBox Margin="0, 2" Width="Auto" HorizontalAlignment="Left" SelectedIndex="0">
+                                                <ComboBoxItem>320 x 240</ComboBoxItem>
+                                                <ComboBoxItem>640 x 480</ComboBoxItem>
+                                                <ComboBoxItem>800 x 600</ComboBoxItem>
+                                                <ComboBoxItem>1024 x 768</ComboBoxItem>
+                                            </ComboBox>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Vertical">
+                                            <TextBlock Margin="0, 0, 0, 0" Text="Output mode"/>
+                                            <ComboBox Margin="0, 2" Width="Auto" HorizontalAlignment="Left" SelectedIndex="0">
+                                                <ComboBoxItem>Surface</ComboBoxItem>
+                                                <ComboBoxItem>Overlay</ComboBoxItem>
+                                                <ComboBoxItem>OpenGL</ComboBoxItem>
+                                                <ComboBoxItem>OpenGL (No filtering)</ComboBoxItem>
+                                                <ComboBoxItem>DirectDraw</ComboBoxItem>
+                                            </ComboBox>
+                                        </StackPanel>                                    </StackPanel>
+                                    <StackPanel Height="Auto" Margin="15, 0, 0, 0">
+                                        <CheckBox Margin="0, 2" IsChecked="{Binding IsUsingScanCodes, FallbackValue=False}">Use scan codes</CheckBox>
+                                        <CheckBox Margin="0, 2" IsChecked="{Binding IsWaitOnErrorEnabled, FallbackValue=False}">Wait on error</CheckBox>
+
+                                        <StackPanel Orientation="Horizontal"  Margin="0, 2">
+                                            <TextBlock Text="Mouse sensitivity : "/>
+                                            <TextBlock Text="{Binding ElementName=_MouseSensitivitySlider, Path=Value}"/>
+                                        </StackPanel>
+                                        <Slider x:Name="_MouseSensitivitySlider" 
+                                                TickPlacement="BottomRight"
+                                                HorizontalAlignment="Left"
+                                                IsSnapToTickEnabled="True"
+                                                TickFrequency="40" 
+                                                Maximum="1000" 
+                                                Minimum="1" 
+                                                Width="150"
+                                                />
+                                        <CheckBox Margin="0, 2" IsChecked="{Binding IsAutolockEnabled, FallbackValue=False}">Auto-lock mouse</CheckBox>
+
+                                    </StackPanel>
+                                </StackPanel>
+                            </Expander>
+                        </Border>
+                    </Grid>
+                </TabItem>
                 <TabItem DataContext="{Binding Source={x:Static p:Settings.Default}}" 
                          xmlns:p="clr-namespace:DosGameOrganizer.Properties"
                          Header="Settings" 
@@ -324,6 +401,6 @@
                 </TabItem>
             </TabControl>
         </Grid>
-    </DockPanel>    
-    
+    </DockPanel>
+
 </Window>
