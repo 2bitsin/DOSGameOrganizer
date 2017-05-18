@@ -227,6 +227,7 @@
                         </Grid>
                     </Grid>
                 </TabItem>
+                <!--
                 <TabItem Header="DOSBox.conf" Padding="5">
                     <Grid Margin="5">
                         <Grid.ColumnDefinitions>
@@ -304,6 +305,7 @@
                         </Border>
                     </Grid>
                 </TabItem>
+                -->
                 <TabItem DataContext="{Binding Source={x:Static p:Settings.Default}}" 
                          xmlns:p="clr-namespace:DosGameOrganizer.Properties"
                          Header="Settings" 
