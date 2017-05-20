@@ -174,20 +174,19 @@
                                                />
                                 </StackPanel>
                             </Button>
-                            <TextBlock Margin="10" Text="{Binding ElementName=_Grid, Path=SelectedItem.Archive.StatusText}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"
                                     Grid.Row="1"
                                     Margin="5"
                                     >
-                            <CheckBox IsChecked="{Binding ElementName=_Grid, Path=SelectedItem.Archive.FilterExecutables}">Filter .exe, .com and .bat</CheckBox>
+                            <CheckBox IsChecked="{Binding ElementName=_Grid, Path=SelectedItem.FilterExecutables}">Filter .exe, .com and .bat</CheckBox>
                         </StackPanel>
                         <Separator Grid.Row="2"></Separator>
                         <Grid HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"
                               Grid.Row="3"
                               >
-                            <ListView ItemsSource="{Binding ElementName=_Grid, Path=SelectedItem.Archive.DirectoryEntries}" 
+                            <ListView ItemsSource="{Binding ElementName=_Grid, Path=SelectedItem.DirectoryEntries}" 
                                       SelectedValue="{Binding SelectedStartupFile, Mode=OneWayToSource}"
                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                       VirtualizingPanel.VirtualizationMode="Recycling"

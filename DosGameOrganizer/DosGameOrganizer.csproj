@@ -68,7 +68,6 @@
     <Compile Include="Utils\Win32IconResourcePreviewWindow.xaml.cs">
       <DependentUpon>Win32IconResourcePreviewWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ZipFileModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="OrganizerWindow.xaml.cs">

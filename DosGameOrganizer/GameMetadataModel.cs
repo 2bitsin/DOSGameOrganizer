@@ -8,6 +8,7 @@ using System.IO;
 using System.Windows.Media;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace DosGameOrganizer
 {
@@ -19,8 +20,6 @@ namespace DosGameOrganizer
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        ZipFileModel _Archive;
-        public ZipFileModel Archive => _Archive;        
 
         string _Developer;
         public string GameDataPath
@@ -95,13 +94,12 @@ namespace DosGameOrganizer
                     else
                     {
                         _Path = value;
-                    }
-                    _Archive = new ZipFileModel(_Path);
+                    }                    
 
                     _U("Path");
-                    _U("Archive");
                     _U("GameDataPath");
-                    _U("GameDataPathExists");                    
+                    _U("GameDataPathExists");
+                    _U("DirectoryEntries");
                 }
             }
         }
@@ -110,6 +108,7 @@ namespace DosGameOrganizer
         {
             Directory.Delete(GameDataPath, true);
             _U("GameDataPathExists");
+            _U("DirectoryEntries");
         }
 
         public bool GameDataPathExists
@@ -135,14 +134,18 @@ namespace DosGameOrganizer
 
         public Task Extract()
         {
-            var _archive = this.Archive;
             if (!Directory.Exists(GameDataPath))
             {
                 Directory.CreateDirectory(GameDataPath);                
-                return _archive.ExtractTo(GameDataPath).ContinueWith((task) =>
+                return Task.Run(() => 
+                {
+                    ZipFile.ExtractToDirectory(_Path, GameDataPath);
+                })
+                .ContinueWith((task) =>
                 {
                     _U("GameDataPath");
                     _U("GameDataPathExists");
+                    _U("DirectoryEntries");
                 });
             }
             return Task.Run(() => { });
@@ -169,7 +172,46 @@ namespace DosGameOrganizer
             }
         }
 
+        public class DirectoryEntry
+        {
+            public string FullName { get; set; }
+            public string Name => System.IO.Path.GetFileName(FullName);
+        }
+
+        public IEnumerable<DirectoryEntry> DirectoryEntries
+        {
+            get
+            {
+                if (GameDataPathExists)
+                {
+                    var _basePath = System.IO.Path.GetFullPath(GameDataPath);
+                    foreach (var _file in Directory.GetFileSystemEntries(GameDataPath, "*.*", SearchOption.AllDirectories))
+                    {
+                        var _relFile = _file.Replace(_basePath + @"\", "");
+                        yield return new DirectoryEntry()
+                        {
+                            FullName = _relFile
+                        };
+                    }
+                }
+                else
+                {
+                    var _archive = ZipFile.OpenRead(_Path);
+                    foreach (var _file in _archive.Entries)
+                    {
+                        yield return new DirectoryEntry()
+                        {
+                            FullName = _file.FullName
+                        };
+                    }
+                }
+                yield break;
+            }
+        }
+        public bool FilterExecutables { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
     };
+
     
 }
